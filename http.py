@@ -1,19 +1,20 @@
+"""Takes care of fetching data via HTTP."""
 import urllib2
 import ssl
 from socket import error as SocketError
-import os
 import ConfigParser
 import json
+import time
 
 ENABLE_DEBUG_PRINT = False
 
-TX_BASE_URL         = "https://blockchain.info/tx/"
-TX_INDEX_BASE_URL   = "https://blockchain.info/tx-index/"
+TX_BASE_URL = "https://blockchain.info/tx/"
+TX_INDEX_BASE_URL = "https://blockchain.info/tx-index/"
 SATOSHIS_PER_BTC = 100000000
 
 CONFIG_FILENAME = 'app.cfg'
 
-MAX_RETRY_TIME_IN_SEC = 60
+MAX_RETRY_TIME_IN_SEC = 2
 NUM_SEC_TIMEOUT = 30
 NUM_SEC_SLEEP = 0
 

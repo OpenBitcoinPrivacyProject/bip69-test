@@ -1,13 +1,12 @@
 '''Unit tests for `bip69` module.'''
 
 import unittest
-import os
 import json
 
-import bip69
+import bip69 #bip69.py
 
 #TODO: move me to a .json in a test directory
-TX_0a6a357e = '''
+TX_0A6A357E = '''
 {
     "txid": "0a6a357e2f7796444e02638749d9611c008b253fb55f5dc88b739b230ed0c4c3",
     "version": 1,
@@ -199,15 +198,11 @@ TX_0a6a357e = '''
 '''
 
 class Bip69Test(unittest.TestCase):
-    def setUp(self):
-        pass
-
-    def tearDown(self):
-        pass
-
+    """Ensure `bip69` module is working correctly."""
     def test_get_inputs_from_rpc_json_0a6a357e(self):
-        tx_0a6a357e = json.loads(TX_0a6a357e)
-        inputs = bip69.get_inputs_from_rpc_json(tx_0a6a357e)
+        """Verify that relevant input data is extracted for tx 0a6a357e..."""
+        tx_json_0a6a357e = json.loads(TX_0A6A357E)
+        inputs = bip69.get_inputs_from_rpc_json(tx_json_0a6a357e)
 
         self.assertEqual(len(inputs), 17)
         self.assertEqual(inputs[0], (('643e5f4e66373a57251fb173151e838ccd27d279'
@@ -216,19 +211,21 @@ class Bip69Test(unittest.TestCase):
                                        '0da9c6d6149e96ca43f1102b1'), 1))
 
     def test_sort_inputs_0a6a357e(self):
-        tx_0a6a357e = json.loads(TX_0a6a357e)
-        inputs = bip69.get_inputs_from_rpc_json(tx_0a6a357e)
+        """Verify that inputs are correctly sorted for tx 0a6a357e..."""
+        tx_json_0a6a357e = json.loads(TX_0A6A357E)
+        inputs = bip69.get_inputs_from_rpc_json(tx_json_0a6a357e)
         bip69_inputs = bip69.sort_inputs(inputs)
-        self.assertEqual(bip69_inputs[0], (('0e53ec5dfb2cb8a71fec32dc9a634a35b7'
-                                            'e24799295ddd5278217822e0b31f57'),
-                                            0))
-        self.assertEqual(bip69_inputs[10], (('7d037ceb2ee0dc03e82f17be7935d238b'
-                                             '35d1deabf953a892a4507bfbeeb3ba4'),
-                                           1))
+        self.assertEqual(bip69_inputs[0],
+                         (('0e53ec5dfb2cb8a71fec32dc9a634a35b7e24799295ddd52782'
+                           '17822e0b31f57'), 0))
+        self.assertEqual(bip69_inputs[10],
+                         (('7d037ceb2ee0dc03e82f17be7935d238b35d1deabf953a892a4'
+                           '507bfbeeb3ba4'), 1))
 
     def test_get_outputs_from_rpc_json_0a6a357e(self):
-        tx_0a6a357e = json.loads(TX_0a6a357e)
-        outputs = bip69.get_outputs_from_rpc_json(tx_0a6a357e)
+        """Verify that relevant output data is extracted for tx 0a6a357e..."""
+        tx_json_0a6a357e = json.loads(TX_0A6A357E)
+        outputs = bip69.get_outputs_from_rpc_json(tx_json_0a6a357e)
 
         self.assertEqual(len(outputs), 2)
         self.assertEqual(outputs[0], (('76a9144a5fba237213a062f6f57978f796390bd'
@@ -237,9 +234,9 @@ class Bip69Test(unittest.TestCase):
                                        '2084f8488ac'), 40000000000))
 
     def test_sort_outputs_0a6a357e(self):
-
-        tx_0a6a357e = json.loads(TX_0a6a357e)
-        outputs = bip69.get_outputs_from_rpc_json(tx_0a6a357e)
+        """Verify that outputs are correctly sorted for tx 0a6a357e..."""
+        tx_json_0a6a357e = json.loads(TX_0A6A357E)
+        outputs = bip69.get_outputs_from_rpc_json(tx_json_0a6a357e)
         bip69_outputs = bip69.sort_outputs(outputs)
         self.assertEqual(bip69_outputs[0], (('76a9144a5fba237213a062f6f57978f79'
                                              '6390bdcf8d01588ac'), 400057456))
@@ -247,10 +244,12 @@ class Bip69Test(unittest.TestCase):
                                              '03c1562084f8488ac'), 40000000000))
 
     def test_is_bip69_0a6a357e(self):
-        tx_0a6a357e = json.loads(TX_0a6a357e)
-        self.assertFalse(bip69.is_bip69(tx_0a6a357e))
+        """Test a transaction that isn't bip-69 compliant"""
+        tx_json_0a6a357e = json.loads(TX_0A6A357E)
+        self.assertFalse(bip69.is_bip69(tx_json_0a6a357e))
 
     def test_is_bip69_with_properly_sorted_inputs_and_outputs(self):
+        """Test a synthesized transaction that is BIP-69 compliant."""
         BIP_69_TX_JSON = """
         {
             "vin": [

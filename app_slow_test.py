@@ -1,4 +1,8 @@
-"""Unit tests for the main module, `app`. Tests in command-line mode."""
+"""Unit tests for the main module, `app`. Tests in command-line mode.
+
+In order to put `app.py` into command-line mode, temporarily set its `WEB_MODE`
+flag to `True`.
+"""
 
 import commands
 import unittest
@@ -8,6 +12,7 @@ BIP_69_VALID_JSON = "{'compatible': 'true'}"
 BIP_69_INVALID_JSON = "{'compatible': 'false'}"
 
 class AppTest(unittest.TestCase):
+    """A series of tests, most of which involve network queries."""
     def setUp(self):
         pass
 
@@ -41,6 +46,7 @@ class AppTest(unittest.TestCase):
         self.assertEqual(output, "{'error_message':'%s'}" % app.GENERIC_ERR_MSG)
 
     def test_tx_not_bip69(self):
+        """A random tx that isn't bip-69 compliant. Results in generic err."""
         txid = ('15796981d90b9ecbce09a9e8a7b4f447566f2f859b808f4e940fb3b6ac17d3'
                 'd5')
         output = commands.getoutput('python app.py %s' % txid)

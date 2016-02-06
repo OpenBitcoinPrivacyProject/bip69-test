@@ -1,14 +1,12 @@
+"""Unit tests for `http` module that don't require network traffic."""
+
 import unittest
 import http
 
 class HttpTest(unittest.TestCase):
-    def setUp(self):
-        pass
-
-    def tearDown(self):
-        pass
-
+    """Quick testss for functions in `http` module."""
     def test_build_tx_url(self):
+        """Build one URL to fetch tx data from blockchain.info."""
         txid = ('15796981d90b9ecbce09a9e8a7b4f447566f2f859b808f4e940fb3b6ac17d3'
                 'd5')
         url = http.build_tx_url(txid)
@@ -27,7 +25,7 @@ class HttpTest(unittest.TestCase):
                          'should be valid url using specified api code.')
 
     def test_build_tx_index_url(self):
-        ##https://blockchain.info/tx-index/50555080?format=json
+        """Build one URL to fetch previous output data from blockchain.info."""
         tx_index = '50555080'
         url = http.build_tx_index_url(tx_index)
         self.assertIn(
