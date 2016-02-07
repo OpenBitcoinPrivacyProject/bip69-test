@@ -1,0 +1,28 @@
+{
+    "vin": [
+        {
+            "txid": "28e0fdd185542f2c6ea19030b0796051e7772b6026dd5ddccd7a2f93b73e6fc2",
+            "vout": 0
+        },
+        {
+            "txid": "643e5f4e66373a57251fb173151e838ccd27d279aca882997e005016bb53d5aa",
+            "vout": 0
+        }
+    ],
+    "vout": [
+        {
+            "value": 4.00057456,
+            "n": 0,
+            "scriptPubKey": {
+                "hex": "76a9144a5fba237213a062f6f57978f796390bdcf8d01588ac"
+            }
+        },
+        {
+            "value": 400,
+            "n": 1,
+            "scriptPubKey": {
+                "hex": "76a9145be32612930b8323add2212a4ec03c1562084f8488ac"
+            }
+        }
+    ]
+}
