@@ -24,7 +24,7 @@ def main():
     txid = None
     if WEB_MODE:
         print "Content-Type: application/json;charset=utf-8\n"
-        get_params = cgi.MiniFieldStorage()
+        get_params = cgi.FieldStorage()
         txid = get_params.getvalue('txid')
     else:
         try:
