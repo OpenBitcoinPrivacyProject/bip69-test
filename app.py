@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 '''Test if txid corresponds to a BIP-69 compliant tx and print relevant text.
 
 Prints one of the following in JSON format:
