@@ -3,3 +3,6 @@
 
 #config file
 app.cfg
+
+#deploy script
+deploy.sh
