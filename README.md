@@ -17,10 +17,13 @@ From the command-line:
 
 This can also be used as a CGI module on a website by sending a request with the GET parameter `txid`.
 
+You can use the code live here:
+http://www.openbitcoinprivacyproject.org/bip69-test/
+
 ## Tests
 
-`./run_slow_tests.sh`
-`./run_quick_tests.sh`
+* `./run_slow_tests.sh`
+* `./run_quick_tests.sh`
 
 ## Primary Authors
 
