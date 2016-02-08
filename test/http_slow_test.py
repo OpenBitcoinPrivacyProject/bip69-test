@@ -60,4 +60,14 @@ class HttpTest(unittest.TestCase):
         self.assertEqual(rpc_json['vout'][3]['scriptPubKey']['hex'],
                          '76a9149c2280c4b6bc685ea756ee6dc1d56e34aea2ecae88ac')
 
+    def test_get_block_txids(self):
+        """Verify that a block height is correctly fetched."""
+        block_height = 187
+        txids = http.get_block_txids(block_height)
+        self.assertEqual(len(txids), 2)
+        self.assertIn(('70587f1780ccd2ebbace28a7b33d83d19f4362f10ff7a4ad88f8c41'
+                       '3883f94b7'), txids)
+        self.assertIn(('4385fcf8b14497d0659adccfe06ae7e38e0b5dc95ff8a13d7c62035'
+                       '994a0cd79'), txids)
+
 unittest.TestLoader().loadTestsFromTestCase(HttpTest)

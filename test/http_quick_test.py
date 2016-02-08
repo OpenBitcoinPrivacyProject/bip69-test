@@ -2,6 +2,7 @@
 
 import unittest
 import http
+import json
 
 class HttpTest(unittest.TestCase):
     """Quick testss for functions in `http` module."""
@@ -38,5 +39,41 @@ class HttpTest(unittest.TestCase):
                          ('https://blockchain.info/tx-index/50555080?'
                           'format=json&api_code=scrappydoo'),
                          'should be valid url using specified api code.')
+
+    def test_build_block_url(self):
+        """Build one URL to fetch block data from blockchain.info"""
+        block_height = 187
+        url = http.build_block_url(block_height)
+        self.assertIn(
+            'https://blockchain.info/block-height/187?format=json',
+            url,
+            'should be a valid url + optional api code set in cfg file.')
+        api_key = 'scrappydoo'
+        url = http.build_block_url(block_height=block_height, api_key=api_key)
+        self.assertEqual(
+            url,
+            ('https://blockchain.info/block-height/187?format=json'
+             '&api_code=scrappydoo'),
+            'should be valid url using specified api code.')
+
+    def test_get_main_chain_block(self):
+        """Verify that the correct block is extracted from a list."""
+        fake_json_str = """
+        {
+            "blocks": [
+                {
+                    "hash": "cd",
+                    "main_chain": false
+                },
+                {
+                    "hash": "ab",
+                    "main_chain": true
+                }
+            ]
+        }
+        """
+        fake_json = json.loads(fake_json_str)
+        block = http.get_main_chain_block(bci_blocks_json=fake_json)
+        self.assertTrue(block['hash'], 'ab')
 
 unittest.TestLoader().loadTestsFromTestCase(HttpTest)

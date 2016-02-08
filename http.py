@@ -10,6 +10,7 @@ ENABLE_DEBUG_PRINT = False
 
 TX_BASE_URL = "https://blockchain.info/tx/"
 TX_INDEX_BASE_URL = "https://blockchain.info/tx-index/"
+BLOCK_HEIGHT_BASE_URL = "https://blockchain.info/block-height/"
 SATOSHIS_PER_BTC = 100000000
 
 CONFIG_FILENAME = 'app.cfg'
@@ -79,14 +80,24 @@ def api_key_from_cfg():
     except ConfigParser.Error:
         return None
 
-def build_tx_url(txid, api_key=None):
-    """Build the URL needed to get data for specified transaction"""
-    url = "%s%s?format=json" % (TX_BASE_URL, txid)
+def get_url_with_api_key(url, api_key):
+    """Adds the API key to the url as param if specified.
+    Args:
+        url (str): The base URL.
+        api_key (str or None): API key.
+    Returns:
+        str: URL.
+    """
     if api_key is None:
         api_key = api_key_from_cfg()
     if api_key is not None:
         url = "%s&api_code=%s" % (url, api_key)
     return url
+
+def build_tx_url(txid, api_key=None):
+    """Build the URL needed to get data for specified transaction"""
+    url = "%s%s?format=json" % (TX_BASE_URL, txid)
+    return get_url_with_api_key(url, api_key)
 
 def build_tx_index_url(tx_index, api_key=None):
     """Build the URL needed to get data for specified previous tx output.
@@ -96,11 +107,17 @@ def build_tx_index_url(tx_index, api_key=None):
         str: URL.
     """
     url = "%s%s?format=json" % (TX_INDEX_BASE_URL, str(tx_index))
-    if api_key is None:
-        api_key = api_key_from_cfg()
-    if api_key is not None:
-        url = "%s&api_code=%s" % (url, api_key)
-    return url
+    return get_url_with_api_key(url, api_key)
+
+def build_block_url(block_height, api_key=None):
+    """Build the URL needed to get data for specified block.
+    Args:
+        block_height: Integer greater than or equal to zero.
+    Returns:
+        str: URL.
+    """
+    url = "%s%d?format=json" % (BLOCK_HEIGHT_BASE_URL, block_height)
+    return get_url_with_api_key(url, api_key)
 
 def get_rpc_tx_json(txid):
     """Given a txid, request data from BC.I until we have an RPC-like JSON.
@@ -147,6 +164,35 @@ def get_rpc_tx_json(txid):
         vout = {'value':value, 'scriptPubKey':{'hex':script_pub_key_hex}}
         rpc_json['vout'].append(vout)
     return rpc_json
+
+def get_block_txids(block_height):
+    """Get a list of transaction ids as base58 strings for the block height."""
+    assert isinstance(block_height, int)
+    assert block_height >= 0
+
+    bci_blocks_json = json.loads(fetch_url(build_block_url(block_height)))
+    main_chain_block = get_main_chain_block(bci_blocks_json)
+    txids = []
+    for txn in main_chain_block['tx']:
+        if 'hash' in txn:
+            txids.append(txn['hash'])
+    return txids
+
+def get_main_chain_block(bci_blocks_json):
+    """Get the block that belongs to the Bitcoin main chain.
+    BC.I's /block_height end point will return a list of blocks in JSON format,
+    but only one of them will be the main chain block, with others having been
+    orphaned.
+    Args:
+        bci_blocks_json: The object returned by calling `json.loads` on
+            BC.I's /block-height endpoint at a specified height.
+    Returns:
+        JSON object consisting of a single block's worth of information.
+    """
+    for block in bci_blocks_json['blocks']:
+        if block['main_chain']:
+            return block
+    raise Exception
 
 def dprint(msg):
     """Debug print statements."""
